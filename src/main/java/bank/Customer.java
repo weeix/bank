@@ -5,7 +5,9 @@ public class Customer {
     private int pin;
     private String name;
 
-    public Customer(int id, int pin, String name) {
+    private IAccountManager manager;
+
+    Customer(int id, int pin, String name) {
         this.id = id;
         this.pin = pin;
         this.name = name;
@@ -25,5 +27,13 @@ public class Customer {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public BankAccount getAccount() {
+        return manager.getAccount(this.id);
+    }
+
+    protected void setAccountManager(IAccountManager manager) {
+        this.manager = manager;
     }
 }

@@ -5,13 +5,14 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CustomerTest {
+class CustomerTest {
 
-    Customer cust;
+    private Customer cust;
 
     @BeforeEach
     void setup() {
         cust = new Customer(1, 123, "Kwan");
+        cust.setAccountManager(new StubAccountManager());
     }
 
     @Test
@@ -38,5 +39,11 @@ public class CustomerTest {
     @Test
     void testPinNotMatch() {
         assertFalse(cust.match(999));
+    }
+
+    @Test
+    void testGetAccount() {
+        BankAccount account = cust.getAccount();
+        assertEquals(500, account.getBalance());
     }
 }
