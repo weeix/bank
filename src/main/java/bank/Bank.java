@@ -15,7 +15,10 @@ public class Bank {
     }
 
     protected Bank(String name, IDataService dataService) {
-        this.bankName = name;
+        if (name.trim().length() == 0) {
+            throw new IllegalArgumentException("Bank name can not be empty");
+        }
+        this.bankName = name.trim();
         this.customers = new HashMap<>();
         this.dataService = dataService;
     }
