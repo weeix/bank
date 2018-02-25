@@ -17,7 +17,27 @@ class BankCustomerTest {
     }
 
     @Test
-    void testFindCustomer() {
+    void testCreateBankWithEmptyName() {
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                () -> new Bank(""));
+        assertEquals("Bank name can not be empty", exception.getMessage());
+    }
+
+    @Test
+    void testCreateBankWithSpaceOnlyName() {
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                () -> new Bank("   "));
+        assertEquals("Bank name can not be empty", exception.getMessage());
+    }
+
+    @Test
+    void testCustomerNotFound() {
+        Customer found = bank.findCustomerById(0);
+        assertNull(found);
+    }
+
+    @Test
+    void testCustomerFound() {
         Customer found = bank.findCustomerById(1);
         assertNotNull(found);
         assertSame(cust, found);
@@ -34,12 +54,17 @@ class BankCustomerTest {
     }
 
     @Test
-    void testValidateCustomerValid() {
+    void testValidateCorrectPin() {
         assertTrue(bank.validateCustomer(1, 123));
     }
 
     @Test
-    void testValidateCustomerNotValid() {
+    void testValidateIncorrectPin() {
         assertFalse(bank.validateCustomer(1, 999));
+    }
+
+    @Test
+    void testValidateNonExistingCustomer() {
+        assertFalse(bank.validateCustomer(0, 999));
     }
 }
