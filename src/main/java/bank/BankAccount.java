@@ -4,6 +4,9 @@ public class BankAccount {
     private double balance;
 
     BankAccount(double balance) {
+        if (balance < 0) {
+            throw new IllegalArgumentException("Balance must not be negative value");
+        }
         this.balance = balance;
     }
 
