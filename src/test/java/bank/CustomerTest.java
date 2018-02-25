@@ -16,6 +16,42 @@ class CustomerTest {
     }
 
     @Test
+    void testCreateCustomerNegativeIdNegativePinEmptyName() {
+        assertThrows(IllegalArgumentException.class,
+                ()-> new Customer(-1, -1, ""));
+    }
+
+    @Test
+    void testCreateCustomerNegativeIdPositivePinSpaceOnlyName() {
+        assertThrows(IllegalArgumentException.class,
+                ()-> new Customer(-1, 1, "   "));
+    }
+
+    @Test
+    void testCreateCustomerNegativeIdNegativePinValidName() {
+        assertThrows(IllegalArgumentException.class,
+                ()-> new Customer(-1, -1, "Noi"));
+    }
+
+    @Test
+    void testCreateCustomerPositiveIdPositivePinEmptyName() {
+        assertThrows(IllegalArgumentException.class,
+                ()-> new Customer(1, 1, ""));
+    }
+
+    @Test
+    void testCreateCustomerPositiveIdNegativePinSpaceOnlyName() {
+        assertThrows(IllegalArgumentException.class,
+                ()-> new Customer(1, -1, "   "));
+    }
+
+    @Test
+    void testCreateCustomerPositiveIdPositivePinValidName() {
+        Customer cust = new Customer(1, 1, "Noi");
+        assertEquals("Noi", cust.getName());
+    }
+
+    @Test
     void testGetId() {
         assertEquals(1, cust.getId());
     }
@@ -26,14 +62,33 @@ class CustomerTest {
     }
 
     @Test
-    void testSetName() {
+    void testSetValidName() {
         cust.setName("Noon");
         assertEquals("Noon", cust.getName());
     }
 
     @Test
+    void testSetSpaceOnlyName() {
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                () -> cust.setName("   "));
+        assertEquals("Customer name must not be empty", exception.getMessage());
+    }
+
+    @Test
+    void testSetEmptyName() {
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                () -> cust.setName(""));
+        assertEquals("Customer name must not be empty", exception.getMessage());
+    }
+
+    @Test
     void testPinMatch() {
         assertTrue(cust.match(123));
+    }
+
+    @Test
+    void testPinMatchButNegative() {
+        assertFalse(cust.match(-123));
     }
 
     @Test
