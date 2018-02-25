@@ -8,16 +8,43 @@ import static org.junit.jupiter.api.Assertions.*;
 class BankAccountTest {
 
     private BankAccount account;
+    private double defaultBalance = 1000;
 
     @BeforeEach
     void setup() {
-        account = new BankAccount(1000);
+        account = new BankAccount(defaultBalance);
     }
 
     @Test
-    void deposit() {
-        account.deposit(200);
-        assertEquals(1200, account.getBalance());
+    void createBankAccountWithNegativeBalance() {
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                () -> new BankAccount(-1000));
+        assertEquals("Balance must not be negative value", exception.getMessage());
+    }
+
+    @Test
+    void createBankAccountWithSlightlyNegativeBalance() {
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                () -> new BankAccount(-0.01));
+        assertEquals("Balance must not be negative value", exception.getMessage());
+    }
+
+    @Test
+    void createBankAccountWithZeroBalance() {
+        BankAccount account = new BankAccount(0);
+        assertEquals(0, account.getBalance());
+    }
+
+    @Test
+    void createBankAccountWithPositiveBalance() {
+        BankAccount account = new BankAccount(1000);
+        assertEquals(1000, account.getBalance());
+    }
+
+    @Test
+    void createBankAccountWithSlightlyPositiveBalance() {
+        BankAccount account = new BankAccount(0.01);
+        assertEquals(0.01, account.getBalance());
     }
 
     @Test
@@ -26,10 +53,33 @@ class BankAccountTest {
                 () -> account.deposit(-200));
         assertEquals("Amount must be greater than zero", exception.getMessage());
     }
+
     @Test
-    void withdraw() {
-        account.withdraw(200);
-        assertEquals(800, account.getBalance());
+    void depositSlightlyNegativeAmount() {
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                () -> account.deposit(-0.01));
+        assertEquals("Amount must be greater than zero", exception.getMessage());
+    }
+
+    @Test
+    void depositZeroAmount() {
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                () -> account.deposit(0));
+        assertEquals("Amount must be greater than zero", exception.getMessage());
+    }
+
+    @Test
+    void depositPositiveAmount() {
+        double amount = 200;
+        account.deposit(amount);
+        assertEquals(defaultBalance + amount, account.getBalance());
+    }
+
+    @Test
+    void depositSlightlyPositiveAmount() {
+        double amount = 0.01;
+        account.deposit(amount);
+        assertEquals(defaultBalance + amount, account.getBalance());
     }
 
     @Test
@@ -38,10 +88,52 @@ class BankAccountTest {
                 () -> account.withdraw(-200));
         assertEquals("Amount must be greater than zero", exception.getMessage());
     }
+
+    @Test
+    void withdrawSlightlyNegativeAmount() {
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                () -> account.withdraw(-0.01));
+        assertEquals("Amount must be greater than zero", exception.getMessage());
+    }
+
+    @Test
+    void withdrawZeroAmount() {
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                () -> account.withdraw(0));
+        assertEquals("Amount must be greater than zero", exception.getMessage());
+    }
+
+    @Test
+    void withdrawPositiveAmount() {
+        double amount = 200;
+        account.withdraw(amount);
+        assertEquals(defaultBalance - amount, account.getBalance());
+    }
+
+    @Test
+    void withdrawSlightlyPositiveAmount() {
+        double amount = 0.01;
+        account.withdraw(amount);
+        assertEquals(defaultBalance - amount, account.getBalance());
+    }
+
+    @Test
+    void withdrawEqualToBalance() {
+        account.withdraw(defaultBalance);
+        assertEquals(0, account.getBalance());
+    }
+
     @Test
     void withdrawMoreThanBalance() {
         Throwable exception = assertThrows(IllegalArgumentException.class,
-                () -> account.withdraw(1200));
+                () -> account.withdraw(defaultBalance + 200));
+        assertEquals("Can't withdraw more than balance", exception.getMessage());
+    }
+
+    @Test
+    void withdrawSlightlyMoreThanBalance() {
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                () -> account.withdraw(defaultBalance + 0.01));
         assertEquals("Can't withdraw more than balance", exception.getMessage());
     }
 }
